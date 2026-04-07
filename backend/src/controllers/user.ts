@@ -2,6 +2,7 @@ import { type Request, type Response } from "express";
 import User from "../models/user";
 import { generateToken } from "../utils/generateToken";
 import { logActivity } from "../utils/activitieslog";
+import { type IAuthRequest } from "../middlewares/auth";
 
 // @desc    Register a new user
 // @route   POST /api/users/register
@@ -57,7 +58,6 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 // @desc    Authenticate user & get token
 // @route   POST /api/users/login
 // @access  Public
-
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
@@ -142,6 +142,44 @@ export const deleteUser = async (req: Request, res: Response) => {
     } else {
       res.status(404).json({ message: "User not found" });
     }
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// @desc    Get user profile (via cookie)
+// @route   GET /api/users/profile
+// @access  Private
+export const getUserProfile = async (req: IAuthRequest, res: Response) => {
+  try {
+    if (req.user) {
+      res.json({
+        user: {
+          _id: req.user._id,
+          name: req.user.name,
+          email: req.user.email,
+          role: req.user.role,
+        },
+      });
+    } else {
+      res.status(401).json({ message: "Unauthorized" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// @desc    Logout user / clear cookie
+// @route   POST /api/users/logout
+// @access  Public
+export const logout = async (req: Request, res: Response) => {
+  try {
+    res.cookie("jwt", "", {
+      httpOnly: true,
+      expires: new Date(0),
+    });
+
+    res.json({ message: "Logged out successfully" });
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
   }
