@@ -120,3 +120,29 @@ export const updateUser = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// @desc    Delete user (Admin)
+// @route   DELETE /api/users/:id
+// @access  Private/Admin
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      await user.deleteOne();
+
+      if ((req as any).user) {
+        await logActivity({
+          userId: (req as any).user._id.toString(),
+          action: "Deleted user",
+          details: `Deleted user with email: ${user.email}`,
+        });
+      }
+
+      res.status(200).json({ message: "User delete successfully" });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
