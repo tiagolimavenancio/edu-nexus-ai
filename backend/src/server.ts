@@ -6,6 +6,7 @@ import morgan from "morgan";
 import cors from "cors";
 import { connectDB } from "./config/db";
 import userRoutes from "./routes/user";
+import logsRoutes from "./routes/activitieslog";
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api/users", userRoutes);
+app.use("/api/activities", logsRoutes);
 
 connectDB().then(() => {
   app.listen(PORT, () => {
