@@ -1,14 +1,11 @@
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import express, {
-  type Application,
-  type Request,
-  type Response,
-} from "express";
+import express, { type Application, type Request, type Response } from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
 import { connectDB } from "./config/db";
+import userRoutes from "./routes/user";
 
 dotenv.config();
 
@@ -39,6 +36,8 @@ app.use((err: Error, req: Request, res: Response, next: Function) => {
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({ status: "OK", message: "Server is healthy" });
 });
+
+app.use("/api/users", userRoutes);
 
 connectDB().then(() => {
   app.listen(PORT, () => {
