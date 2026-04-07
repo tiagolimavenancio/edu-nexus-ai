@@ -5,6 +5,7 @@ const userRoutes = express.Router();
 import {
   deleteUser,
   getUserProfile,
+  getUsers,
   login,
   logout,
   registerUser,
@@ -15,6 +16,8 @@ import { authorize, protect } from "../middlewares/auth";
 userRoutes.post("/register", protect, authorize(["admin", "teacher"]), registerUser);
 userRoutes.post("/login", login);
 userRoutes.post("/logout", logout);
+
+userRoutes.get("/", protect, authorize(["admin", "teacher"]), getUsers);
 userRoutes.get("/profile", protect, getUserProfile);
 
 userRoutes.put("/update/:id", protect, authorize(["admin", "teacher"]), updateUser);

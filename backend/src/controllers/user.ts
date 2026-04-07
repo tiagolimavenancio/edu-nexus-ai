@@ -147,6 +147,59 @@ export const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
+// @desc    Get all users (With Pagination & Filtering)
+// @route   GET /api/users
+// @access  Private/Admin
+export const getUsers = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // 1. Parse Query Params safely
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const role = req.query.role as string;
+    const search = req.query.search as string; // Optional: Add search later
+
+    const skip = (page - 1) * limit;
+
+    // 2. Build Filter Object
+    const filter: any = {};
+
+    if (role && role !== "all" && role !== "") {
+      filter.role = role;
+    }
+
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+      ];
+    }
+    // 3. Fetch Users with Pagination & Filtering
+    const [total, users] = await Promise.all([
+      User.countDocuments(filter), // Get total count for pagination logic
+      User.find(filter)
+        .select("-password")
+        // .populate("studentClass", "_id name section") // Added section for context
+        // .populate("teacherSubjects", "_id name code")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit),
+    ]);
+
+    // 4. Send Response
+    res.json({
+      users,
+      pagination: {
+        total,
+        page,
+        pages: Math.ceil(total / limit),
+        limit,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error });
+  }
+};
+
 // @desc    Get user profile (via cookie)
 // @route   GET /api/users/profile
 // @access  Private
