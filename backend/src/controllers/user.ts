@@ -1,9 +1,10 @@
 import { type Request, type Response } from "express";
 import User from "../models/user";
+import { generateToken } from "../utils/generateToken";
 
 // @desc    Register a new user
 // @route   POST /api/users/register
-// @access  Public
+// @access  Private (Admin & Teacher only)
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, email, password, role, studentClass, teacherSubject, isActive } = req.body;
@@ -38,6 +39,26 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
       });
     } else {
       res.status(400).json({ message: "Invalid user data" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// @desc    Authenticate user & get token
+// @route   POST /api/users/login
+// @access  Public
+
+export const login = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
+    if (user && (await user.matchPassword(password))) {
+      generateToken(user.id.toString(), res);
+      res.status(200).json(user);
+    } else {
+      res.status(401).json({ message: "Invalid email or password" });
     }
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
