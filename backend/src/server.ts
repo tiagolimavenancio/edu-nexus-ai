@@ -9,6 +9,7 @@ import userRoutes from "./routes/user";
 import logsRoutes from "./routes/activitieslog";
 import academicYearRoutes from "./routes/academicYear";
 import classRoutes from "./routes/class";
+import subjectRoutes from "./routes/subject";
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/activities", logsRoutes);
 app.use("/api/academic-years", academicYearRoutes);
 app.use("/api/classes", classRoutes);
+app.use("/api/subjects", subjectRoutes);
 
 connectDB().then(() => {
   app.listen(PORT, () => {
