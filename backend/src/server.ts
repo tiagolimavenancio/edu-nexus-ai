@@ -7,6 +7,7 @@ import cors from "cors";
 import { connectDB } from "./config/db";
 import userRoutes from "./routes/user";
 import logsRoutes from "./routes/activitieslog";
+import academicYearRoutes from "./routes/academicYear";
 
 dotenv.config();
 
@@ -40,6 +41,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/users", userRoutes);
 app.use("/api/activities", logsRoutes);
+app.use("/api/academic-years", academicYearRoutes);
 
 connectDB().then(() => {
   app.listen(PORT, () => {

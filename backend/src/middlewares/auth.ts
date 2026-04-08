@@ -1,6 +1,7 @@
-import { type NextFunction, type Request, type Response } from "express";
-import User, { type IUser, type userRoles } from "../models/user";
+import { type Request, type Response, type NextFunction } from "express";
 import jwt from "jsonwebtoken";
+
+import User, { type IUser, type userRoles } from "../models/user.ts";
 
 export interface IAuthRequest extends Request {
   user?: IUser;
