@@ -4,12 +4,14 @@ import express, { type Application, type Request, type Response } from "express"
 import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
+import { serve } from "inngest/express";
 import { connectDB } from "./config/db";
 import userRoutes from "./routes/user";
 import logsRoutes from "./routes/activitieslog";
 import academicYearRoutes from "./routes/academicYear";
 import classRoutes from "./routes/class";
 import subjectRoutes from "./routes/subject";
+import { inngest, functions } from "./inngest";
 
 dotenv.config();
 
@@ -46,6 +48,7 @@ app.use("/api/activities", logsRoutes);
 app.use("/api/academic-years", academicYearRoutes);
 app.use("/api/classes", classRoutes);
 app.use("/api/subjects", subjectRoutes);
+app.use("/api/inngest", serve({ client: inngest, functions }));
 
 connectDB().then(() => {
   app.listen(PORT, () => {
