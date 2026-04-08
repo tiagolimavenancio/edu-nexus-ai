@@ -8,6 +8,7 @@ import { connectDB } from "./config/db";
 import userRoutes from "./routes/user";
 import logsRoutes from "./routes/activitieslog";
 import academicYearRoutes from "./routes/academicYear";
+import classRoutes from "./routes/class";
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/users", userRoutes);
 app.use("/api/activities", logsRoutes);
 app.use("/api/academic-years", academicYearRoutes);
+app.use("/api/classes", classRoutes);
 
 connectDB().then(() => {
   app.listen(PORT, () => {
