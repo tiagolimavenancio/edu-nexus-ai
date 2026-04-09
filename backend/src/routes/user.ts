@@ -1,7 +1,4 @@
 import express from "express";
-
-const userRoutes = express.Router();
-
 import {
   deleteUser,
   getUserProfile,
@@ -13,14 +10,16 @@ import {
 } from "../controllers/user";
 import { authorize, protect } from "../middlewares/auth";
 
-userRoutes.post("/register", protect, authorize(["admin", "teacher"]), registerUser);
-userRoutes.post("/login", login);
-userRoutes.post("/logout", logout);
+const userRouter = express.Router();
 
-userRoutes.get("/", protect, authorize(["admin", "teacher"]), getUsers);
-userRoutes.get("/profile", protect, getUserProfile);
+userRouter.post("/register", protect, authorize(["admin", "teacher"]), registerUser);
+userRouter.post("/login", login);
+userRouter.post("/logout", logout);
 
-userRoutes.put("/update/:id", protect, authorize(["admin", "teacher"]), updateUser);
-userRoutes.delete("/delete/:id", protect, authorize(["admin", "teacher"]), deleteUser);
+userRouter.get("/", protect, authorize(["admin", "teacher"]), getUsers);
+userRouter.get("/profile", protect, getUserProfile);
 
-export default userRoutes;
+userRouter.put("/update/:id", protect, authorize(["admin", "teacher"]), updateUser);
+userRouter.delete("/delete/:id", protect, authorize(["admin", "teacher"]), deleteUser);
+
+export default userRouter;

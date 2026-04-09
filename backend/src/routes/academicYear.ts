@@ -8,13 +8,13 @@ import {
   updateAcademicYear,
 } from "../controllers/academicYear";
 
-const academicYearRoutes = express.Router();
+const academicYearRouter = express.Router();
 
-academicYearRoutes.route("/").get(protect, authorize(["admin"]), getAllAcademicYears);
+academicYearRouter.route("/").get(protect, authorize(["admin"]), getAllAcademicYears);
 
-academicYearRoutes.route("/create").post(protect, authorize(["admin"]), createAcademicYear);
-academicYearRoutes.route("/current").post(protect, authorize(["admin"]), getCurrentAcademicYear);
-academicYearRoutes.route("/update/:id").patch(protect, authorize(["admin"]), updateAcademicYear);
-academicYearRoutes.route("/delete/:id").delete(protect, authorize(["admin"]), deleteAcademicYear);
+academicYearRouter.route("/create").post(protect, authorize(["admin"]), createAcademicYear);
+academicYearRouter.route("/current").post(protect, authorize(["admin"]), getCurrentAcademicYear);
+academicYearRouter.route("/update/:id").patch(protect, authorize(["admin"]), updateAcademicYear);
+academicYearRouter.route("/delete/:id").delete(protect, authorize(["admin"]), deleteAcademicYear);
 
-export default academicYearRoutes;
+export default academicYearRouter;
