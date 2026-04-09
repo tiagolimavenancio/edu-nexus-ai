@@ -114,6 +114,23 @@ export const generateTimeTable = inngest.createFunction(
       return JSON.parse(cleanJSON);
     });
 
-    return { contextData, aiSchedule };
+    await step.run("save-timetable", async () => {
+      // Delete existing to avoid duplicates
+      // we should also delete any timetable assigned or generate for these class
+      await Timetable.findOneAndDelete({
+        class: classId,
+        academicYear: academicYearId,
+      });
+
+      await Timetable.create({
+        class: classId,
+        academicYear: academicYearId,
+        schedule: aiSchedule.schedule,
+      });
+
+      return { success: true, classId };
+    });
+
+    return { message: "Timetable generated successfully" };
   },
 );
