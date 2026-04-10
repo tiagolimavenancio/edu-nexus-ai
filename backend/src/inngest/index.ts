@@ -1,4 +1,4 @@
 export { inngest } from "./client";
-import { generateTimeTable } from "./functions";
+import { generateExam, generateTimeTable } from "./functions";
 
-export const functions = [generateTimeTable]; // ou importe de functions.ts
+export const functions = [generateTimeTable, generateExam]; // ou importe de functions.ts

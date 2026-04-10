@@ -5,6 +5,7 @@ import User from "../models/user.ts";
 import Timetable from "../models/timetable.ts";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText } from "ai";
+import Exam from "../models/exam.ts";
 
 interface IGenSettings {
   startTime: string;
@@ -132,5 +133,83 @@ export const generateTimeTable = inngest.createFunction(
     });
 
     return { message: "Timetable generated successfully" };
+  },
+);
+
+export const generateExam = inngest.createFunction(
+  { id: "Generate-Exam" },
+  { event: "exam/generate" }, //name
+  async ({ event, step }) => {
+    const { examId, topic, subjectName, difficulty, count } = event.data;
+
+    // generate timetable logic would go here
+    const aiExam = await step.run("generate-exam-logic", async () => {
+      const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+      if (!apiKey) {
+        throw new NonRetriableError("GOOGLE_GENERATIVE_AI_API_KEY is missing");
+      }
+
+      const prompt = `
+        You are a strict teacher. Create a JSON array of ${count} multiple-choice questions for a high school exam.
+
+        CONTEXT:
+        - Subject: ${subjectName}
+        - Topic: ${topic}
+        - Difficulty: ${difficulty}
+
+        STRICT JSON SCHEMA (Array of Objects):
+        [
+          {
+            "questionText": "Question string",
+            "type": "MCQ",
+            "options": ["Option A", "Option B", "Option C", "Option D"],
+            "correctAnswer": "The exact string of the correct option",
+            "points": 1
+          }
+        ]
+
+        RULES:
+        1. Output ONLY raw JSON. No Markdown.
+        2. Ensure correct answer matches one of the options exactly.
+      `;
+
+      const google = createGoogleGenerativeAI({
+        apiKey,
+      });
+
+      // I will show you how to get one if these does not work for you
+      const activeModel = google("gemini-3-flash-preview");
+
+      const { text } = await generateText({
+        prompt,
+        model: activeModel,
+      });
+
+      // Sanitize JSON
+      const cleanJson = text
+        .replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim();
+
+      return JSON.parse(cleanJson);
+    });
+
+    // now let save
+    await step.run("save-exam", async () => {
+      const exam = await Exam.findById(examId);
+
+      if (!exam) {
+        throw new NonRetriableError(`Exam ${examId} not found`);
+      }
+
+      // Update the exam with the new questions
+      exam.questions = aiExam;
+      exam.isActive = false; // Keep it inactive until teacher reviews it
+
+      await exam.save();
+
+      return { success: true, count: aiExam.length };
+    });
+    return { message: "Exam generated successfully" };
   },
 );

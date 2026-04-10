@@ -13,6 +13,7 @@ import classRouter from "./routes/class";
 import subjectRouter from "./routes/subject";
 import { inngest, functions } from "./inngest";
 import timeRouter from "./routes/timetable";
+import examRouter from "./routes/exam";
 
 dotenv.config();
 
@@ -50,6 +51,7 @@ app.use("/api/academic-years", academicYearRouter);
 app.use("/api/classes", classRouter);
 app.use("/api/subjects", subjectRouter);
 app.use("/api/timetables", timeRouter);
+app.use("/api/exams", examRouter);
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
