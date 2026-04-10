@@ -14,6 +14,7 @@ import subjectRouter from "./routes/subject";
 import { inngest, functions } from "./inngest";
 import timeRouter from "./routes/timetable";
 import examRouter from "./routes/exam";
+import dashboardRouter from "./routes/dashboard";
 
 dotenv.config();
 
@@ -52,6 +53,7 @@ app.use("/api/classes", classRouter);
 app.use("/api/subjects", subjectRouter);
 app.use("/api/timetables", timeRouter);
 app.use("/api/exams", examRouter);
+app.use("/api/dashboard", dashboardRouter);
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
