@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Menu, X, GraduationCap } from "lucide-react";
+import { Link } from "react-router";
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,26 +39,30 @@ export const Header = () => {
               Overview
             </a>
             <a
-              href="#programs"
-              className="text-gray-600 dark:text-gray-300 hover:text-[#3ecf8e] transition-colors font-medium"
-            >
-              Programs
-            </a>
-            <a
               href="#stats"
               className="text-gray-600 dark:text-gray-300 hover:text-[#3ecf8e] transition-colors font-medium"
             >
               Research
             </a>
             <a
+              href="#programs"
+              className="text-gray-600 dark:text-gray-300 hover:text-[#3ecf8e] transition-colors font-medium"
+            >
+              Programs
+            </a>
+
+            <a
               href="#assistant"
               className="text-gray-600 dark:text-gray-300 hover:text-[#3ecf8e] transition-colors font-medium"
             >
               AI Guide
             </a>
-            <button className="bg-[#3ecf8e] text-black px-5 py-2 rounded-md font-bold hover:bg-[#34b27b] transition-all transform hover:scale-105">
+            <Link
+              to="/login"
+              className="bg-[#3ecf8e] text-black px-5 py-2 rounded-md font-bold hover:bg-[#34b27b] transition-all transform hover:scale-105"
+            >
               Apply Now
-            </button>
+            </Link>
           </div>
 
           {/* Mobile button */}
@@ -79,16 +84,16 @@ export const Header = () => {
             Overview
           </a>
           <a
-            href="#programs"
-            className="block text-gray-600 dark:text-gray-300 hover:text-[#3ecf8e] text-lg font-medium"
-          >
-            Programs
-          </a>
-          <a
             href="#stats"
             className="block text-gray-600 dark:text-gray-300 hover:text-[#3ecf8e] text-lg font-medium"
           >
             Research
+          </a>
+          <a
+            href="#programs"
+            className="block text-gray-600 dark:text-gray-300 hover:text-[#3ecf8e] text-lg font-medium"
+          >
+            Programs
           </a>
           <a
             href="#assistant"
@@ -96,9 +101,12 @@ export const Header = () => {
           >
             AI Guide
           </a>
-          <button className="w-full bg-[#3ecf8e] text-black px-5 py-3 rounded-md font-bold text-center">
+          <Link
+            to="/login"
+            className="w-full bg-[#3ecf8e] text-black px-5 py-3 rounded-md font-bold text-center"
+          >
             Apply Now
-          </button>
+          </Link>
         </div>
       )}
     </nav>
