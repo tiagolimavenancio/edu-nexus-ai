@@ -1,30 +1,35 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { toast } from "sonner";
 import { Loader2, CheckCircle, Clock, Calendar, Award, ArrowLeft } from "lucide-react";
 
 import { api } from "@/lib/api";
-import { useAuth } from "@/hooks/AuthProvider";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import type { exam, Submission } from "@/types";
-import ExamRadio from "@/components/lms/ExamRadio";
+import { useAuth } from "@/provider/AuthProvider";
+import type { IExam, ISubmission } from "@/types/Exam";
+import { ExamRadio } from "@/components/ExamRadio";
 
 const Exam = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const { user } = useAuth();
+
   const isStudent = user?.role === "student";
   const isTeacher = user?.role === "teacher" || user?.role === "admin";
 
-  const [exam, setExam] = useState<exam | null>(null);
+  const [exam, setExam] = useState<IExam | null>(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+
   // Student Answers State: { [questionId]: "Selected Option" }
   const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [submission, setSubmission] = useState<Submission | null>(null);
+  const [submission, setSubmission] = useState<ISubmission | null>(null);
   const totalPoints = submission && exam ? exam.questions.length : 0;
   const percentage =
     submission && totalPoints > 0 ? Math.round((submission.score / totalPoints) * 100) : 0;
@@ -32,6 +37,7 @@ const Exam = () => {
   // handle fetch exam details
   const fetch = async () => {
     setLoading(true);
+
     await api
       .get(`/exams/${id}`)
       .then((res) => {
@@ -43,13 +49,13 @@ const Exam = () => {
         navigate("/lms/exams");
         setLoading(false);
       });
-    setLoading(true);
+
     if (isStudent) {
       await api
         .get(`/exams/${id}/result`)
         .then((res) => {
-          setLoading(false);
           setSubmission(res.data);
+          setLoading(false);
         })
         .catch(() => {
           setLoading(false);
@@ -86,6 +92,7 @@ const Exam = () => {
   }
 
   const isExpired = exam.isActive && new Date() > new Date(exam.dueDate);
+
   if ((!exam.isActive || isExpired) && !isTeacher) {
     return (
       <div className="h-[60vh] flex flex-col items-center justify-center text-center space-y-4">
@@ -104,6 +111,7 @@ const Exam = () => {
       toast.success("Exam deleted");
       navigate("/lms/quizzes");
     } catch (error) {
+      console.log({ error });
       toast.error("Failed to delete");
     }
   };
@@ -282,5 +290,6 @@ const Exam = () => {
     </div>
   );
 };
+
 // show the result since I'm an admin
 export default Exam;

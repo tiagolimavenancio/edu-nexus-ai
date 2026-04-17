@@ -1,25 +1,27 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { api } from "@/lib/api";
 import { Plus, FileText, Clock, Users, Loader2 } from "lucide-react";
-import { useAuth } from "@/hooks/AuthProvider";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
-import { useNavigate } from "react-router";
-import type { exam } from "@/types";
 import { toast } from "sonner";
-import ExamGenerator from "@/components/lms/ExamGenerator";
+import { useAuth } from "@/provider/AuthProvider";
+import type { IExam } from "@/types/Exam";
+import { ExamGenerator } from "@/components/ExamGenerator";
 
 const Exams = () => {
   const { user } = useAuth();
+
   const isTeacher = user?.role === "teacher" || user?.role === "admin";
-  const [exams, setExams] = useState<exam[]>([]);
+
+  const [exams, setExams] = useState<IExam[]>([]);
   const [isGenOpen, setIsGenOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // fetch exams
   const fetchExams = async () => {
     try {
       setLoading(true);
@@ -105,6 +107,7 @@ const Exams = () => {
           </Card>
         ))}
       </div>
+
       <ExamGenerator open={isGenOpen} onOpenChange={setIsGenOpen} onSuccess={fetchExams} />
     </div>
   );

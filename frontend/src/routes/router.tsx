@@ -8,6 +8,8 @@ import PrivateRoutes from "@/routes/PrivateRoutes";
 import Classes from "@/pages/Classes";
 import { Subjects } from "@/pages/Subjects";
 import Timetable from "@/pages/Timetable";
+import Exams from "@/pages/Exams";
+import Exam from "@/pages/Exam";
 
 export const router = createBrowserRouter([
   {
@@ -62,6 +64,14 @@ export const router = createBrowserRouter([
           {
             path: "timetable",
             element: <Timetable />,
+          },
+          {
+            path: "lms/exams",
+            element: <Exams />,
+          },
+          {
+            path: "lms/exams/:id",
+            element: <Exam />,
           },
         ],
       },
