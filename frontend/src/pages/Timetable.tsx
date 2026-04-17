@@ -1,17 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
-import { useAuth } from "@/hooks/AuthProvider";
-import type { schedule } from "@/types";
-import GeneratorControls, { type GenSettings } from "@/components/timetable/GeneratorControls";
-import TimetableGrid from "@/components/timetable/TimetableGrid";
+import type { ISchedule } from "@/types/Schedule";
+import { useAuth } from "@/provider/AuthProvider";
+import { GeneratorControls, type IGenSettings } from "@/components/GeneratorControls";
+import { TimetableGrid } from "@/components/TimetableGrid";
 
 const Timetable = () => {
   const { user } = useAuth();
+
   const isAdmin = user?.role === "admin";
   const isStudent = user?.role === "student";
 
-  const [scheduleData, setScheduleData] = useState<schedule[]>([]);
+  const [scheduleData, setScheduleData] = useState<ISchedule[]>([]);
   const [loadingSchedule, setLoadingSchedule] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedClass, setSelectedClass] = useState("");
@@ -45,7 +47,7 @@ const Timetable = () => {
     }
   }, [selectedClass]);
 
-  const handleGenerate = async (selectedClass: string, yearId: string, settings: GenSettings) => {
+  const handleGenerate = async (selectedClass: string, yearId: string, settings: IGenSettings) => {
     try {
       setIsGenerating(true);
       // sorry about that, we should be passing classId instead of selectedClass, now that won't work coz class is not assigned teachers and subjects
@@ -78,6 +80,7 @@ const Timetable = () => {
           {isStudent ? "View your weekly class schedule." : "View or manage weekly schedules."}
         </p>
       </div>
+
       {!isStudent && (
         <GeneratorControls
           onGenerate={handleGenerate}
@@ -87,6 +90,7 @@ const Timetable = () => {
           setSelectedClass={setSelectedClass}
         />
       )}
+
       <TimetableGrid schedule={scheduleData} isLoading={loadingSchedule} />
     </div>
   );
