@@ -77,6 +77,7 @@ export const getAllAcademicYears = async (req: Request, res: Response): Promise<
 export const getCurrentAcademicYear = async (req: Request, res: Response): Promise<void> => {
   try {
     const currentYear = await AcademicYear.findOne({ isCurrent: true });
+
     if (!currentYear) {
       res.status(404).json({ message: "No current academic year found" });
       return;

@@ -11,9 +11,9 @@ import {
 const academicYearRouter = express.Router();
 
 academicYearRouter.route("/").get(protect, authorize(["admin"]), getAllAcademicYears);
+academicYearRouter.route("/current").get(protect, authorize(["admin"]), getCurrentAcademicYear);
 
 academicYearRouter.route("/create").post(protect, authorize(["admin"]), createAcademicYear);
-academicYearRouter.route("/current").post(protect, authorize(["admin"]), getCurrentAcademicYear);
 academicYearRouter.route("/update/:id").patch(protect, authorize(["admin"]), updateAcademicYear);
 academicYearRouter.route("/delete/:id").delete(protect, authorize(["admin"]), deleteAcademicYear);
 
