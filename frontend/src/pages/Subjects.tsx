@@ -6,12 +6,13 @@ import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import Search from "@/components/global/Search";
 import CustomAlert from "@/components/global/CustomAlert";
-import type { pagination, subject } from "@/types";
-import { SubjectTable } from "@/components/subjects/SubjectTable";
-import { SubjectForm } from "@/components/subjects/SubjectForm";
+import type { ISubject } from "@/types/Subject";
+import type { IPagination } from "@/types/Pagination";
+import { SubjectTable } from "@/components/SubjectTable/SubjectTable";
+import { SubjectForm } from "@/components/SubjectForm/SubjectForm";
 
 export const Subjects = () => {
-  const [subjects, setSubjects] = useState<subject[]>([]);
+  const [subjects, setSubjects] = useState<ISubject[]>([]);
   const [loading, setLoading] = useState(true);
 
   // --- Search & Pagination State ---
@@ -22,7 +23,7 @@ export const Subjects = () => {
 
   // --- Dialog States ---
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingSubject, setEditingSubject] = useState<subject | null>(null);
+  const [editingSubject, setEditingSubject] = useState<ISubject | null>(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -44,10 +45,11 @@ export const Subjects = () => {
       const params = new URLSearchParams();
       params.append("page", pageNum.toString());
       params.append("limit", "10");
+
       if (debouncedSearch) params.append("search", debouncedSearch);
 
       const { data } = (await api.get(`/subjects?${params.toString()}`)) as {
-        data: { subjects: subject[]; pagination: pagination };
+        data: { subjects: ISubject[]; pagination: IPagination };
       };
 
       // Handle response structure { subjects: [], pagination: {} }
@@ -58,6 +60,7 @@ export const Subjects = () => {
         setSubjects([]);
       }
     } catch (error) {
+      console.log({ error });
       toast.error("Failed to load subjects");
     } finally {
       setLoading(false);
@@ -74,7 +77,7 @@ export const Subjects = () => {
     setIsFormOpen(true);
   };
 
-  const handleEdit = (item: subject) => {
+  const handleEdit = (item: ISubject) => {
     setEditingSubject(item);
     setIsFormOpen(true);
   };
@@ -86,11 +89,13 @@ export const Subjects = () => {
 
   const confirmDelete = async () => {
     if (!deleteId) return;
+
     try {
       await api.delete(`/subjects/delete/${deleteId}`);
       toast.success("Subject deleted successfully");
       fetchSubjects();
-    } catch (error: any) {
+    } catch (error) {
+      console.log({ error });
       toast.error("Failed to delete subject");
     } finally {
       setIsDeleteOpen(false);
@@ -111,6 +116,7 @@ export const Subjects = () => {
           </Button>
         </div>
       </div>
+
       {/* table */}
       <SubjectTable
         data={subjects}
@@ -121,6 +127,7 @@ export const Subjects = () => {
         setPage={setPageNum}
         totalPages={totalPages}
       />
+
       {/* form */}
       <SubjectForm
         open={isFormOpen}
@@ -128,6 +135,7 @@ export const Subjects = () => {
         initialData={editingSubject}
         onSuccess={fetchSubjects}
       />
+
       <CustomAlert
         handleDelete={confirmDelete}
         isOpen={isDeleteOpen}

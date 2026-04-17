@@ -6,6 +6,7 @@ import Login from "@/pages/Login";
 import UserManagement from "@/pages/UserManagement";
 import PrivateRoutes from "@/routes/PrivateRoutes";
 import Classes from "@/pages/Classes";
+import { Subjects } from "@/pages/Subjects";
 
 export const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ export const router = createBrowserRouter([
           {
             path: "classes",
             element: <Classes />,
+          },
+          {
+            path: "subjects",
+            element: <Subjects />,
           },
         ],
       },
