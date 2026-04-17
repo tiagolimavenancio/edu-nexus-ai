@@ -5,6 +5,7 @@ import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import UserManagement from "@/pages/UserManagement";
 import PrivateRoutes from "@/routes/PrivateRoutes";
+import Classes from "@/pages/Classes";
 
 export const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ export const router = createBrowserRouter([
           {
             path: "users/admins",
             element: <UserManagement role="admin" title="Admins" description="Manage Admins." />,
+          },
+          {
+            path: "classes",
+            element: <Classes />,
           },
         ],
       },
